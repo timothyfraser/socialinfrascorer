@@ -84,6 +84,49 @@ si_auth_signin = function(client, email, password) {
   )
 }
 
+#' Request a password reset email
+#'
+#' @param client A client from `si_client()`.
+#' @param email User email.
+#'
+#' @return Parsed response payload from Supabase auth.
+#' @export
+si_auth_reset_password = function(client, email) {
+  if (!is.character(email) || length(email) != 1 || nchar(trimws(email)) == 0) {
+    stop("`email` must be a non-empty string.")
+  }
+
+  req = httr2::request(paste0(client$supabase_url, "/auth/v1/recover")) |>
+    si_add_common_headers(client = client, use_auth = FALSE) |>
+    httr2::req_body_json(list(email = trimws(email)))
+
+  si_parse_response(httr2::req_perform(req))
+}
+
+#' Delete the currently authenticated account via private API
+#'
+#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param api_base_url API base URL for the private account endpoint.
+#'
+#' @return Parsed response payload.
+#' @export
+si_auth_delete_account = function(client, api_base_url = Sys.getenv("SCORECARD_API_URL", "")) {
+  si_require_auth(client)
+
+  if (!is.character(api_base_url) || length(api_base_url) != 1 || nchar(trimws(api_base_url)) == 0) {
+    stop("`api_base_url` must be a non-empty string. Set SCORECARD_API_URL or provide it explicitly.")
+  }
+
+  req = httr2::request(paste0(sub("/+$", "", trimws(api_base_url)), "/account")) |>
+    httr2::req_method("DELETE") |>
+    httr2::req_headers(
+      Authorization = paste("Bearer", client$access_token),
+      `Content-Type` = "application/json"
+    )
+
+  si_parse_response(httr2::req_perform(req))
+}
+
 #' @keywords internal
 `%||%` = function(lhs, rhs) {
   if (is.null(lhs)) rhs else lhs

@@ -53,3 +53,35 @@ Our system needs to support the following operations
    - Note: every user has a subscription tier. For now, just use 'free' and 'developer', where 'free' gets to query, let's say, a max of n_queries = 100 per month. 'developer' (describes the team currently developing the API and package) gets to query and unlimited amount. Default user subscription is 'free'
 - Change user's subscription tier (protected action, only the private api can do this)
 - Check how many n_queries are **remaining** this month for user X. Requires there to be a subscriptions metadata table that records how many queries are allowed per month, with a unique subscription id matching the one assigned to each user on signup.
+
+## Implemented client functions
+
+- Auth:
+  - `si_auth_signup()`
+  - `si_auth_signin()`
+  - `si_auth_reset_password()`
+  - `si_auth_delete_account()`
+- Polygon lookup:
+  - `si_get_polygon_by_osm_id()`
+  - `si_get_polygon_by_location_id()`
+  - `si_get_polygon_by_area_id()`
+  - `si_get_polygon_lookup_by_place_name()`
+  - `si_get_polygon_by_place_name()`
+- Sites and scorecard:
+  - `si_get_sites_by_location_id()`
+  - `si_get_scorecard_results()`
+- Request workflow:
+  - `si_submit_request()`
+  - `si_get_request_status()`
+  - `si_get_requests()`
+- Usage and subscription:
+  - `si_get_subscription()`
+  - `si_get_usage()`
+  - `si_get_remaining_queries()`
+  - `si_change_subscription()`
+
+## Testing note
+
+- `si_get_subscription()`, `si_get_usage()`, `si_get_remaining_queries()`, and `si_get_requests()` are Supabase-native reads.
+- They do not require `SCORECARD_API_URL`.
+- They do require database migrations `00016`, `00017`, and `00018` to be applied.

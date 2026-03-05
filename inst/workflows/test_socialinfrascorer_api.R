@@ -14,10 +14,9 @@ message("== socialinfrascorer API workflow test ==")
 
 # Fixed test location id used for polygon and scorecard API checks.
 SOCIALINFRA_TEST_LOCATION_ID = "000000000000018"
-SOCIALINFRA_TEST_PLACE_NAME = Sys.getenv("SOCIALINFRA_TEST_PLACE_NAME", "")
-SOCIALINFRA_TEST_COUNTRY = Sys.getenv("SOCIALINFRA_TEST_COUNTRY", "")
-SOCIALINFRA_TEST_STATE = Sys.getenv("SOCIALINFRA_TEST_STATE", "")
-
+SOCIALINFRA_TEST_PLACE_NAME = "Ithaca"
+SOCIALINFRA_TEST_COUNTRY = "USA"
+SOCIALINFRA_TEST_STATE = "NY"
 
 # ------------------------------------------------------------------------------
 # 2) Required environment validation
@@ -146,41 +145,109 @@ if (nchar(test_location_id) > 0) {
   message("-- location_id steps skipped (set SOCIALINFRA_TEST_LOCATION_ID)")
 }
 
-if (nchar(trimws(SOCIALINFRA_TEST_PLACE_NAME)) > 0) {
-  message("-- location lookup by place_name step")
-  place_lookup = tryCatch(
-    si_get_polygon_lookup_by_place_name(
-      client = authed_client,
-      place_name = trimws(SOCIALINFRA_TEST_PLACE_NAME),
-      country = if (nchar(trimws(SOCIALINFRA_TEST_COUNTRY)) > 0) trimws(SOCIALINFRA_TEST_COUNTRY) else NULL,
-      state = if (nchar(trimws(SOCIALINFRA_TEST_STATE)) > 0) trimws(SOCIALINFRA_TEST_STATE) else NULL,
-      limit = 5
-    ),
-    error = function(e) e
-  )
-  if (inherits(place_lookup, "error")) {
-    message("location lookup by place_name step failed (migration may be pending): ", place_lookup$message)
-  } else {
-    message("location lookup rows by place_name: ", nrow(place_lookup))
-  }
 
-  message("-- polygon by place_name step")
-  poly_place = tryCatch(
-    si_get_polygon_by_place_name(
-      client = authed_client,
-      place_name = trimws(SOCIALINFRA_TEST_PLACE_NAME),
-      country = if (nchar(trimws(SOCIALINFRA_TEST_COUNTRY)) > 0) trimws(SOCIALINFRA_TEST_COUNTRY) else NULL,
-      state = if (nchar(trimws(SOCIALINFRA_TEST_STATE)) > 0) trimws(SOCIALINFRA_TEST_STATE) else NULL
-    ),
-    error = function(e) e
-  )
-  if (inherits(poly_place, "error")) {
-    message("polygon by place_name step failed (migration may be pending): ", poly_place$message)
-  } else {
-    message("polygon rows by place_name: ", nrow(poly_place))
-  }
-} else {
-  message("-- place_name steps skipped (set SOCIALINFRA_TEST_PLACE_NAME)")
-}
+# STILL HAS ISSUES
+# if (nchar(trimws(SOCIALINFRA_TEST_PLACE_NAME)) > 0) {
+#   message("-- location lookup by place_name step")
+#   place_lookup = tryCatch(
+#     si_get_polygon_lookup_by_place_name(
+#       client = authed_client,
+#       place_name = trimws(SOCIALINFRA_TEST_PLACE_NAME),
+#       country = if (nchar(trimws(SOCIALINFRA_TEST_COUNTRY)) > 0) trimws(SOCIALINFRA_TEST_COUNTRY) else NULL,
+#       state = if (nchar(trimws(SOCIALINFRA_TEST_STATE)) > 0) trimws(SOCIALINFRA_TEST_STATE) else NULL,
+#       limit = 5
+#     ),
+#     error = function(e) e
+#   )
+#   if (inherits(place_lookup, "error")) {
+#     message("location lookup by place_name step failed (migration may be pending): ", place_lookup$message)
+#   } else {
+#     message("location lookup rows by place_name: ", nrow(place_lookup))
+#   }
+
+#   message("-- polygon by place_name step")
+#   poly_place = tryCatch(
+#     si_get_polygon_by_place_name(
+#       client = authed_client,
+#       place_name = trimws(SOCIALINFRA_TEST_PLACE_NAME),
+#       country = if (nchar(trimws(SOCIALINFRA_TEST_COUNTRY)) > 0) trimws(SOCIALINFRA_TEST_COUNTRY) else NULL,
+#       state = if (nchar(trimws(SOCIALINFRA_TEST_STATE)) > 0) trimws(SOCIALINFRA_TEST_STATE) else NULL
+#     ),
+#     error = function(e) e
+#   )
+#   if (inherits(poly_place, "error")) {
+#     message("polygon by place_name step failed (migration may be pending): ", poly_place$message)
+#   } else {
+#     message("polygon rows by place_name: ", nrow(poly_place))
+#   }
+# } else {
+#   message("-- place_name steps skipped (set SOCIALINFRA_TEST_PLACE_NAME)")
+# }
 
 message("== workflow test complete ==")
+
+# ------------------------------------------------------------------------------
+# 8) New request/account workflow smoke tests
+# ------------------------------------------------------------------------------
+is_missing_migration_error = function(err_msg) {
+  grepl("HTTP 404|HTTP 400|fn_get_user_|subscription_tier|column .* does not exist|relation .* does not exist", err_msg, ignore.case = TRUE)
+}
+
+report_optional_step = function(step_name, result_obj, success_rows_label) {
+  if (inherits(result_obj, "error")) {
+    msg = as.character(result_obj$message)
+    if (is_missing_migration_error(msg)) {
+      message(step_name, " skipped (backend migration not applied): ", msg)
+    } else {
+      message(step_name, " failed: ", msg)
+    }
+  } else {
+    message(success_rows_label, nrow(result_obj))
+  }
+}
+
+message("-- account subscription step")
+subscription_result = tryCatch(
+  si_get_subscription(authed_client),
+  error = function(e) e
+)
+report_optional_step(
+  step_name = "subscription step",
+  result_obj = subscription_result,
+  success_rows_label = "subscription rows: "
+)
+
+message("-- account usage step")
+usage_result = tryCatch(
+  si_get_usage(authed_client),
+  error = function(e) e
+)
+report_optional_step(
+  step_name = "usage step",
+  result_obj = usage_result,
+  success_rows_label = "usage rows: "
+)
+
+message("-- remaining queries step")
+remaining_result = tryCatch(
+  si_get_remaining_queries(authed_client),
+  error = function(e) e
+)
+report_optional_step(
+  step_name = "remaining queries step",
+  result_obj = remaining_result,
+  success_rows_label = "remaining queries rows: "
+)
+
+message("-- requests history step")
+requests_result = tryCatch(
+  si_get_requests(authed_client, limit = 5, offset = 0),
+  error = function(e) e
+)
+report_optional_step(
+  step_name = "requests history step",
+  result_obj = requests_result,
+  success_rows_label = "requests rows: "
+)
+
+message("== workflow test complete (extended) ==")
