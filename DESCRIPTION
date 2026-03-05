@@ -5,6 +5,8 @@ Version: 0.0.0.9000
 Authors@R: c(
     person("Timothy", "Fraser", email = "timothy@example.com", role = c("aut", "cre"))
   )
+Author: Timothy Fraser [aut, cre]
+Maintainer: Timothy Fraser <tmf77@cornell.edu>
 Description: Small client package for read-only access to selected SCORECARD
     Supabase/PostgreSQL data through Supabase Auth and Data API endpoints.
     Supports authenticated user signup/signin, polygon lookup by osm_id or
