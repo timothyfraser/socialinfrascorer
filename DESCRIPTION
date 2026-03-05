@@ -1,0 +1,24 @@
+Package: socialinfrascorer
+Type: Package
+Title: Minimal Supabase Client for Social Infrastructure Scorecard
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Timothy", "Fraser", email = "timothy@example.com", role = c("aut", "cre"))
+  )
+Description: Small client package for read-only access to selected SCORECARD
+    Supabase/PostgreSQL data through Supabase Auth and Data API endpoints.
+    Supports authenticated user signup/signin, polygon lookup by osm_id or
+    location_id/area_id/place_name, place-name location lookup, and bounded
+    scorecard_result downloads.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    httr2,
+    dplyr,
+    curl,
+    osmdata,
+    sf
+Suggests:
+    jsonlite
