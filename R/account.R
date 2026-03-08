@@ -2,7 +2,8 @@
 #'
 #' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
 #' @return A tibble for the authenticated user's profile row.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_subscription = function(client) {
   si_require_auth(client)
   req = httr2::request(paste0(client$supabase_url, "/rest/v1/profiles")) |>
@@ -21,7 +22,8 @@ si_get_subscription = function(client) {
 #' @param start_date Optional start date (`YYYY-MM-DD`).
 #' @param end_date Optional end date (`YYYY-MM-DD`).
 #' @return A tibble from `fn_get_user_usage`.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_usage = function(client,
                         start_date = NULL,
                         end_date = NULL) {
@@ -55,7 +57,8 @@ si_get_usage = function(client,
 #' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
 #'
 #' @return A tibble with subscription tier and remaining query metrics.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_remaining_queries = function(client) {
   si_require_auth(client)
   req = httr2::request(
@@ -75,7 +78,7 @@ si_get_remaining_queries = function(client) {
 #' @param tier Target tier id (`free`, `developer`, etc.).
 #'
 #' @return A tibble with updated profile row.
-#' @export
+#' @keywords internal
 si_change_subscription = function(client, user_id, tier) {
   si_require_auth(client)
   if (!is.character(user_id) || length(user_id) != 1 || nchar(trimws(user_id)) == 0) {

@@ -1,12 +1,13 @@
 #' Create a socialinfrascorer API client
 #'
-#' @param supabase_url Supabase project URL (e.g. https://project.supabase.co).
+#' @param supabase_url Supabase project URL (e.g. \code{https://project.supabase.co}).
 #' @param anon_key Supabase anon/publishable API key.
 #' @param access_token Optional authenticated access token.
 #' @param refresh_token Optional refresh token.
 #'
 #' @return A client object used by package functions.
-#' @export
+#' @keywords internal
+#' @noRd
 si_client = function(supabase_url,
                      anon_key,
                      access_token = NULL,

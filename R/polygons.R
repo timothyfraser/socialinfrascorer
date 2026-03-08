@@ -4,7 +4,8 @@
 #' @param osm_id Numeric OSM identifier in `public.bounds.osm_id`.
 #'
 #' @return A tibble with up to one row.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_polygon_by_osm_id = function(client, osm_id) {
   si_require_auth(client)
 
@@ -31,7 +32,8 @@ si_get_polygon_by_osm_id = function(client, osm_id) {
 #' @param location_id Text location identifier from `public.location.location_id`.
 #'
 #' @return A tibble with up to one row.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_polygon_by_location_id = function(client, location_id) {
   si_require_auth(client)
 
@@ -53,7 +55,8 @@ si_get_polygon_by_location_id = function(client, location_id) {
 #' @param area_id UUID area identifier from `public.location.area_id`.
 #'
 #' @return A tibble with up to one row.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_polygon_by_area_id = function(client, area_id) {
   si_require_auth(client)
 
@@ -84,7 +87,8 @@ si_get_polygon_by_area_id = function(client, area_id) {
 #' @param limit Maximum rows to return. Hard capped at 5.
 #'
 #' @return A tibble of up to 5 matching location rows.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_polygon_lookup_by_place_name = function(client,
                                                place_name,
                                                country = NULL,
@@ -135,7 +139,8 @@ si_get_polygon_lookup_by_place_name = function(client,
 #' @param state Optional state/province filter.
 #'
 #' @return A tibble with up to one row.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_polygon_by_place_name = function(client,
                                         place_name,
                                         country = NULL,

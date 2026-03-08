@@ -7,7 +7,8 @@
 #' @param offset Pagination offset.
 #'
 #' @return A tibble of scorecard_result rows.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_scorecard_results = function(client,
                                     osm_id = NULL,
                                     location_id = NULL,

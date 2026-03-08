@@ -21,9 +21,10 @@ Our system needs to support the following operations
    - We log the request in our database, including user id, request timestamp, request id, and location_id of request polygon. Add also logical fields for 'grid', 'sites', and 'scorecard'. These start as FALSE but will be flipped to TRUE, one by one, as sites get added to the sites table for that location_id, as grid cells get added to the neighborhood_grid_cache for that location_id, and as a scorecard row gets added to the scorecard_result table for that location id. These values will be used as triggers later on for several of those processes. Also add a 'status' and 'update_time'. Also add an 'area' entry (area in square kilometers of the polygon) and a 'n_keywords' entry (default 10). This will help us keep track of how much geospatial data we are being asked to process.
    - We get the population density grid for that neighborhood polygon, by doing the following steps:
       - Using bounding box of that neighborhood polygon, we extract the regional population raster for the current year, cropped to extent of the neighborhood polygon (linked to location_id).
-         - If this is really fast, then we can just use public.neighborhood_raster_cache as a staging ground.
+         - This is an ephemeral processing step; we persist only the resulting grid in `public.neighborhood_grid_cache`.
       - We convert that raster into a grid of 1 square kilometer cells (linked to location_id).
-         - We can save this to public.neighborhood_grid_cache
+         - We persist a minimal cache in `public.neighborhood_grid_cache`:
+           `id`, `location_id`, `year`, `cellsize_m`, `population` (3 decimals), `geometry`.
       - When this is complete, set the 'grid' field value for that request entry to TRUE. This will trigger the sites ingestion process. Database should ping our REST API via HTTP GET request (edge function?) to go query Google Places API via api/routes_ingest.R and jobs/ingest_places.R. This will take a while.
          - note: api/routes_ingest.R and jobs/ingest_places.R are currently configured to use a local file of grid cells, but in the future, they should use public.neighborhood_grid_cache.
       - When this data ingest process is complete (could take a few minutes), set the entry in the request table for field 'sites' to TRUE. This will trigger the scorecard calculation process. Database should ping our REST API via HTTP GET request (edge function?) to go calculate the scorecard. This will take a few seconds. In this API endpoint job,
@@ -48,6 +49,7 @@ Our system needs to support the following operations
 - User deletes account
 - User checks their requests history via 'requests' table, where they only see rows pertaining to their userid.
    - The 'area' and 'n_keywords' fields in the 'requests' table can be multiplied to describe how many total square kilometer queries we have run with Google Places API. This essentially is our cost metric.
+- Request lifecycle timing is tracked in `public.requests` (`status`, `update_time`) rather than in per-cell cache timestamps.
 - User checks total number of requests and 'n_queries' (total square kilometer queries), aggregated per month, within a user provided time frame - defaults to last six months.
 - Check user's subscription tier.
    - Note: every user has a subscription tier. For now, just use 'free' and 'developer', where 'free' gets to query, let's say, a max of n_queries = 100 per month. 'developer' (describes the team currently developing the API and package) gets to query and unlimited amount. Default user subscription is 'free'

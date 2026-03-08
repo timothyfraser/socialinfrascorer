@@ -1,0 +1,12 @@
+pandoc: 3.8.2.1
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  client-api: client-api.html
+  dashboard: dashboard.html
+  get-started: get-started.html
+  workflows: workflows.html
+last_built: 2026-03-08T00:59Z
+urls:
+  reference: https://timothyfraser.github.io/scorecard/socialinfrascorer/reference
+  article: https://timothyfraser.github.io/scorecard/socialinfrascorer/articles

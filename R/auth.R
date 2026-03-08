@@ -1,12 +1,14 @@
 #' Sign up a new Supabase user
 #'
-#' @param client A client from `si_client()`.
+#' @param client A client from \code{si_client()}.
 #' @param email User email.
 #' @param password User password.
 #' @param display_name Optional display name stored in user metadata.
 #'
-#' @return A list with `client`, `session`, `user`, and raw `data`.
-#' @export
+#' @return A list with \code{client}, \code{session}, \code{user}, and
+#'   raw \code{data}.
+#' @keywords internal
+#' @noRd
 si_auth_signup = function(client, email, password, display_name = NULL) {
   payload = list(
     email = as.character(email),
@@ -45,12 +47,14 @@ si_auth_signup = function(client, email, password, display_name = NULL) {
 
 #' Sign in to Supabase with email/password
 #'
-#' @param client A client from `si_client()`.
+#' @param client A client from \code{si_client()}.
 #' @param email User email.
 #' @param password User password.
 #'
-#' @return A list with authenticated `client`, `session`, and raw `data`.
-#' @export
+#' @return A list with authenticated \code{client}, \code{session}, and
+#'   raw \code{data}.
+#' @keywords internal
+#' @noRd
 si_auth_signin = function(client, email, password) {
   req = httr2::request(
     paste0(client$supabase_url, "/auth/v1/token?grant_type=password")
@@ -84,16 +88,25 @@ si_auth_signin = function(client, email, password) {
   )
 }
 
-#' Request a password reset email
+#' Request a password reset email for the signed-in user
 #'
-#' @param client A client from `si_client()`.
-#' @param email User email.
+#' @param client A client from \code{si_client()} authenticated with
+#'   \code{si_auth_signin()}.
 #'
 #' @return Parsed response payload from Supabase auth.
-#' @export
-si_auth_reset_password = function(client, email) {
-  if (!is.character(email) || length(email) != 1 || nchar(trimws(email)) == 0) {
-    stop("`email` must be a non-empty string.")
+#' @keywords internal
+#' @noRd
+si_auth_reset_password = function(client) {
+  si_require_auth(client)
+
+  # Fetch the authenticated user's email from Supabase Auth.
+  user_req = httr2::request(paste0(client$supabase_url, "/auth/v1/user")) |>
+    si_add_common_headers(client = client, use_auth = TRUE)
+  user = si_parse_response(httr2::req_perform(user_req))
+
+  email = user$email %||% NULL
+  if (is.null(email) || !is.character(email) || nchar(trimws(email)) == 0) {
+    stop("Could not resolve authenticated user email for password reset.", call. = FALSE)
   }
 
   req = httr2::request(paste0(client$supabase_url, "/auth/v1/recover")) |>
@@ -103,31 +116,31 @@ si_auth_reset_password = function(client, email) {
   si_parse_response(httr2::req_perform(req))
 }
 
-#' Delete the currently authenticated account via private API
+#' Delete the currently authenticated account
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
-#' @param api_base_url API base URL for the private account endpoint.
+#' Calls the \code{fn_delete_account} Supabase RPC which initiates
+#' account deletion via the Auth Admin API server-side.
+#' No private API URL is required.
 #'
-#' @return Parsed response payload.
-#' @export
-si_auth_delete_account = function(client, api_base_url = Sys.getenv("SCORECARD_API_URL", "")) {
+#' @param client A client from \code{si_client()} authenticated with
+#'   \code{si_auth_signin()}.
+#'
+#' @return A list with \code{status}, \code{user_id}, and \code{message}.
+#' @keywords internal
+#' @noRd
+si_auth_delete_account = function(client) {
   si_require_auth(client)
 
-  if (!is.character(api_base_url) || length(api_base_url) != 1 || nchar(trimws(api_base_url)) == 0) {
-    stop("`api_base_url` must be a non-empty string. Set SCORECARD_API_URL or provide it explicitly.")
+  req = httr2::request(
+    paste0(client$supabase_url, "/rest/v1/rpc/fn_delete_account")
+  ) |>
+    si_add_common_headers(client = client, use_auth = TRUE) |>
+    httr2::req_body_json(list())
+
+  data = si_parse_response(httr2::req_perform(req))
+
+  if (is.character(data) && length(data) == 1) {
+    data = jsonlite::fromJSON(data, simplifyVector = FALSE)
   }
-
-  req = httr2::request(paste0(sub("/+$", "", trimws(api_base_url)), "/account")) |>
-    httr2::req_method("DELETE") |>
-    httr2::req_headers(
-      Authorization = paste("Bearer", client$access_token),
-      `Content-Type` = "application/json"
-    )
-
-  si_parse_response(httr2::req_perform(req))
-}
-
-#' @keywords internal
-`%||%` = function(lhs, rhs) {
-  if (is.null(lhs)) rhs else lhs
+  data
 }
