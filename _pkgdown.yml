@@ -1,0 +1,161 @@
+url: https://timothyfraser.github.io/scorecard/socialinfrascorer/
+destination: ../docs/socialinfrascorer
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#0d0887"
+    link-color: "#7e03a8"
+    navbar-bg: "#0d0887"
+    navbar-light-color: "#ffffff"
+    navbar-light-hover-color: "#f0f921"
+    navbar-light-brand-color: "#ffffff"
+
+development:
+  mode: auto
+
+deploy:
+  install_metadata: true
+
+home:
+  title: "socialinfrascorer: Social Infrastructure Scorecard for R"
+  description: >
+    R client for the Social Infrastructure Scorecard. Authenticate,
+    look up neighborhoods, submit scoring requests, and retrieve results
+    through Supabase.
+  sidebar:
+    structure:
+      - links
+      - license
+      - community
+      - citation
+      - dev
+    components:
+      links:
+        title: LINKS
+        text: |
+          [Dashboard](articles/dashboard.html)
+          <br>
+          [Paper](https://doi.org/10.1016/j.uclim.2022.101287)
+          <br>
+          [Browse source code](https://github.com/timothyfraser/scorecard/tree/main/socialinfrascorer)
+          <br>
+          [Report a bug](https://github.com/timothyfraser/scorecard/issues)
+          <br>
+          [Python Package](https://github.com/timothyfraser/socialinfrascorepy)
+      license:
+        title: LICENSE
+        text: |
+          [Source-Available License](https://github.com/timothyfraser/scorecard/blob/main/socialinfrascorer/LICENSE)
+      community:
+        title: COMMUNITY
+        text: |
+          [Ask a question](https://github.com/timothyfraser/scorecard/discussions)
+      citation:
+        title: CITATION
+        text: |
+          [Cite Package](https://github.com/timothyfraser/scorecard/blob/main/socialinfrascorer/CITATION)
+      dev:
+        title: DEVELOPERS
+        text: |
+          [Timothy Fraser](https://github.com/timothyfraser)
+            <a href="https://orcid.org/0000-0002-4509-0244" aria-label="Timothy Fraser ORCID" target="_blank" rel="noopener noreferrer"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD icon" width="16" height="16" style="vertical-align: middle;"></a> 
+            <a href="https://github.com/timothyfraser" aria-label="Timothy Fraser GitHub" target="_blank" rel="noopener noreferrer"><span class="fa fa-github"></span></a> 
+            <a href="https://www.linkedin.com/in/timothy-fraser-698786186/" aria-label="Timothy Fraser LinkedIn" target="_blank" rel="noopener noreferrer"><span class="fa fa-linkedin"></span></a> 
+            <a href="https://timothyfraser.com" aria-label="Timothy Fraser website" target="_blank" rel="noopener noreferrer"><span class="fa fa-globe"></span></a>
+          <br>
+          <sup>Author, Maintainer</sup>
+          <br>
+          [Nabira Ahmad](https://github.com/nabiraahmad) 
+            <a href="https://github.com/nabiraahmad" aria-label="Nabira Ahmad GitHub" target="_blank" rel="noopener noreferrer"><span class="fa fa-github"></span></a> 
+          <br>
+          <sup>Author</sup>
+          <br>
+          <a href="authors.html">More about authors...</a>
+#            <a href="https://orcid.org/0000-0000-0000-0000" aria-label="Nabira Ahmad ORCID" target="_blank" rel="noopener noreferrer"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" alt="ORCID iD icon" width="16" height="16" style="vertical-align: middle;"></a> <a href="https://github.com/nabiraahmad" aria-label="Nabira Ahmad GitHub" target="_blank" rel="noopener noreferrer"><span class="fa fa-github"></span></a> 
+#            <a href="https://www.linkedin.com/in/your-linkedin-handle" aria-label="Nabira Ahmad LinkedIn" target="_blank" rel="noopener noreferrer"><span class="fa fa-linkedin"></span></a> 
+#            <a href="https://your-website.example.com" aria-label="Nabira Ahmad website" target="_blank" rel="noopener noreferrer"><span class="fa fa-globe"></span></a>
+
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [search, github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/get-started.html
+    articles:
+      text: Articles
+      menu:
+        - text: Dashboard
+          href: articles/dashboard.html
+        - text: Client API Reference
+          href: articles/client-api.html
+        - text: Workflows
+          href: articles/workflows.html
+    github:
+      icon: fa-github
+      href: https://github.com/timothyfraser/scorecard/tree/main
+      aria-label: GitHub
+
+reference:
+  - title: Client Setup
+    desc: Create and configure the API client.
+    contents:
+      - client
+
+  - title: Authentication
+    desc: User sign-up, sign-in, password reset, and account deletion.
+    contents:
+      - sign_up
+      - sign_in
+      - send_password_reset
+      - delete_account
+
+  - title: Polygon Lookup
+    desc: Search and retrieve neighborhood boundaries.
+    contents:
+      - search_locations
+      - get_boundary_by_osm_id
+      - get_boundary_by_location_id
+      - get_boundary_by_area_id
+      - get_boundary_by_place_name
+
+  - title: Themes and Keywords
+    desc: Browse available social-infrastructure themes and keywords.
+    contents:
+      - get_themes
+      - get_theme_keywords
+
+  - title: Scorecard and Sites
+    desc: Retrieve scorecard results and social-infrastructure sites.
+    contents:
+      - get_scorecard
+      - get_sites
+
+  - title: Requests
+    desc: Submit requests and track processing status.
+    contents:
+      - submit_request
+      - get_request_status
+      - get_requests
+
+  - title: Account and Usage
+    desc: Subscription tier, usage summary, and remaining quota.
+    contents:
+      - get_subscription
+      - get_usage
+      - get_remaining_queries
+
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+      - get-started
+  - title: Guides
+    contents:
+      - dashboard
+      - client-api
+      - workflows

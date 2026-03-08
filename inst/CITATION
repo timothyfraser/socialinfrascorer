@@ -1,0 +1,24 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Trust but verify: Validating new measures for mapping social infrastructure in cities",
+  author   = c(person("Timothy", "Fraser"), person("Napuck", "Cherdchaiyapong"), person("Winta", "Tekle"), person("Joel", "Zayas"), person("Courtney", "Page-Tan"), person("Daniel P.", "Aldrich")),
+  journal  = "Urban Climate",
+  year     = "2022",
+  volume   = "46",
+  pages    = "101287",
+  doi      = "10.1016/j.uclim.2022.101287",
+  header   = "To cite the methodology behind socialinfrascorer, please use:"
+)
+
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Urban Anchors, Climate Shocks: Measuring Social Infrastructure and their Exposure to Natural Hazards in U.S. Cities",
+  author   = c(person("Timothy", "Fraser"), person("Stanley", "Chen"), person("Chenfan", "Yin"), person("Xuechao", "Zhang"), person("Daniel P.", "Aldrich")),
+  journal  = "Cornell Systems Studio",
+  year     = "2025",
+  volume   = "",
+  pages    = "XX-XX",
+  doi      = "TBD",
+  header   = "To cite the methodology behind socialinfrascorer, please use:"
+)

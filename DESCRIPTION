@@ -1,24 +1,41 @@
 Package: socialinfrascorer
 Type: Package
-Title: Minimal Supabase Client for Social Infrastructure Scorecard
-Version: 0.0.0.9000
+Title: Supabase Client for Social Infrastructure Scorecard
+Version: 0.1.0
 Authors@R: c(
-    person("Timothy", "Fraser", email = "timothy@example.com", role = c("aut", "cre"))
+    person(
+      "Timothy",
+      "Fraser",
+      email = "timothy@example.com",
+      role = c("aut", "cre"),
+      comment = c(
+        ORCID = "0000-0002-4509-0244",
+        URL = "https://timothyfraser.com"
+      )
+    ),
+    person("Nabira", "Ahmad", role = "aut")
   )
-Description: Small client package for read-only access to selected SCORECARD
-    Supabase/PostgreSQL data through Supabase Auth and Data API endpoints.
-    Supports authenticated user signup/signin, polygon lookup by osm_id or
-    location_id/area_id/place_name, place-name location lookup, and bounded
-    scorecard_result downloads.
-License: MIT + file LICENSE
+Description: Client package for the Social Infrastructure Scorecard.
+    Communicates exclusively through Supabase Auth and PostgREST APIs.
+    Supports signup/signin, polygon lookup, request submission with
+    theme and grid configuration, scorecard downloads, and account
+    management. No direct Plumber API access is required.
+URL: https://timothyfraser.github.io/scorecard/socialinfrascorer/,
+    https://github.com/timothyfraser/scorecard/tree/main/socialinfrascorer
+BugReports: https://github.com/timothyfraser/scorecard/issues
+License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
     httr2,
     dplyr,
-    curl,
-    osmdata,
-    sf
-Suggests:
     jsonlite
+Suggests:
+    curl,
+    sf,
+    osmdata,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/Needs/website: pkgdown

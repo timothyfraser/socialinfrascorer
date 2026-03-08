@@ -5,7 +5,8 @@
 #' @param limit Maximum rows to return. Hard capped at 1000.
 #'
 #' @return A tibble of sites rows.
-#' @export
+#' @keywords internal
+#' @noRd
 si_get_sites_by_location_id = function(client, location_id, limit = 1000L) {
   si_require_auth(client)
 

@@ -1,0 +1,142 @@
+---
+title: "Client API reference"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Client API reference}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+This article documents every user-facing function in **socialinfrascorer**,
+grouped by capability area. All functions communicate through Supabase Auth
+and PostgREST. No private API URL is required.
+
+## Environment requirements
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `SUPABASE_URL` | Always | Supabase project URL |
+| `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+
+**Credentials and safety:** The `SUPABASE_URL` is public. Use only the anon
+(publishable) key client-side; never expose a service-role or secret key.
+
+## Client setup
+
+```{r}
+library(socialinfrascorer)
+
+cli = client(
+  supabase_url    = Sys.getenv("SUPABASE_URL"),
+  anon_key        = Sys.getenv("SUPABASE_ANON_KEY"),
+  access_token    = NULL,
+  refresh_token   = NULL
+)
+```
+
+`client()` returns a lightweight list that stores connection parameters and
+(after sign-in) session tokens.
+
+## Authentication
+
+```{r}
+sign_up(client, email, password, name = NULL)
+sign_in(client, email, password)
+send_password_reset(client)
+delete_account(client)
+```
+
+- `sign_up()` registers a new user; an authenticated client is returned
+  in `$client` when the session is created immediately.
+- `sign_in()` authenticates and returns `$client` (with tokens),
+  `$session`, and the raw `$data`.
+- `send_password_reset()` requires a signed-in session and triggers
+  a reset email for the authenticated user.
+- `delete_account()` calls a server-side RPC that deletes the
+  authenticated user.
+
+## Themes and keywords
+
+```{r}
+get_themes(client)
+get_theme_keywords(client, theme_ids = NULL)
+```
+
+- `get_themes()` lists all available social-infrastructure themes.
+- `get_theme_keywords()` returns keywords for selected theme IDs
+  (or all themes when `NULL`).
+
+## Polygon lookup
+
+```{r}
+search_locations(client, query, country = NULL, state = NULL, limit = 5)
+get_boundary_by_osm_id(client, osm_id)
+get_boundary_by_location_id(client, location_id)
+get_boundary_by_area_id(client, area_id)
+get_boundary_by_place_name(client, query, country = NULL, state = NULL)
+```
+
+Lookup functions return boundary geometry. `search_locations()` returns
+candidate rows for fuzzy matching; `get_boundary_by_place_name()` resolves
+to a single boundary.
+
+## Scorecard and sites
+
+```{r}
+get_scorecard(client, osm_id = NULL, location_id = NULL, limit = 100, offset = 0)
+get_sites(client, location_id, limit = 1000)
+```
+
+- `get_scorecard()` returns density, diversity, dispersion, and composite
+  scores. Filter by either `osm_id` or `location_id`.
+- `get_sites()` returns a random sample of social-infrastructure sites
+  within the given location (capped at `limit`).
+
+## Request workflow
+
+```{r}
+submit_request(
+  client, area,
+  keyword_count   = NULL,
+  request_name    = NULL,
+  label           = NULL,
+  place           = NULL,
+  country         = "US",
+  state           = NULL,
+  theme_ids       = NULL,
+  query_grid_sqkm = 2
+)
+
+get_request_status(client, request_id)
+get_requests(client, limit = 100, offset = 0)
+```
+
+### Parameters for `submit_request()`
+
+- **`area`** — GeoJSON geometry list or JSON string (Polygon / MultiPolygon,
+  CRS 4326).
+- **`theme_ids`** — integer vector or CSV string (e.g. `c(1,3,4)` or
+  `"1,3,4"`). Selects keyword groups for site ingestion.
+- **`query_grid_sqkm`** — cell size for the ephemeral query grid used
+  during Google Places ingestion (default 2 sq km).
+
+## Account and usage
+
+```{r}
+get_subscription(client)
+get_usage(client, start_date = NULL, end_date = NULL)
+get_remaining_queries(client)
+```
+
+- `get_subscription()` returns the user's profile including tier.
+- `get_usage()` summarises request and query counts in a date range.
+- `get_remaining_queries()` returns the remaining monthly quota for the
+  authenticated user.
