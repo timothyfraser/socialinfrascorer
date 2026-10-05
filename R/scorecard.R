@@ -1,6 +1,6 @@
 #' Get scorecard results for a location or OSM area
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param client A client from `client()` authenticated with `sign_in()`.
 #' @param osm_id Optional OSM ID used to resolve one bounds area.
 #' @param location_id Optional location_id used for direct scorecard lookup.
 #' @param limit Maximum rows to return (hard capped to 100).
@@ -29,18 +29,16 @@ si_get_scorecard_results = function(client,
   }
 
   if (has_location) {
-    req = httr2::request(
-      paste0(client$supabase_url, "/rest/v1/rpc/fn_scorecard_result_by_location_id")
-    ) |>
-      si_add_common_headers(client = client, use_auth = TRUE) |>
-      httr2::req_body_json(
-        list(
-          p_location_id = as.character(location_id),
-          p_limit = limit,
-          p_offset = offset
-        )
-      )
-    data = si_parse_response(httr2::req_perform(req))
+    data = si_perform(
+      client,
+      "/rest/v1/rpc/fn_scorecard_result_by_location_id",
+      body = list(
+        p_location_id = as.character(location_id),
+        p_limit = limit,
+        p_offset = offset
+      ),
+      auth = TRUE
+    )
     return(si_as_tibble(data))
   }
 
@@ -50,16 +48,18 @@ si_get_scorecard_results = function(client,
   }
 
   bounds_id = as.character(bounds_row$id[[1]])
-  req = httr2::request(paste0(client$supabase_url, "/rest/v1/scorecard_result")) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_url_query(
+  data = si_perform(
+    client,
+    "/rest/v1/scorecard_result",
+    method = "GET",
+    query = list(
       area_type = "eq.bounds",
       area_id = paste0("eq.", bounds_id),
       order = "computed_at.desc,id.desc",
       limit = limit,
       offset = offset
-    )
-
-  data = si_parse_response(httr2::req_perform(req))
+    ),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }

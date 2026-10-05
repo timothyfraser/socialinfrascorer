@@ -1,6 +1,6 @@
 #' Get one bounds polygon by OSM ID
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param client A client from `client()` authenticated with `sign_in()`.
 #' @param osm_id Numeric OSM identifier in `public.bounds.osm_id`.
 #'
 #' @return A tibble with up to one row.
@@ -14,21 +14,23 @@ si_get_polygon_by_osm_id = function(client, osm_id) {
     stop("`osm_id` must be numeric.")
   }
 
-  req = httr2::request(paste0(client$supabase_url, "/rest/v1/bounds")) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_url_query(
+  data = si_perform(
+    client,
+    "/rest/v1/bounds",
+    method = "GET",
+    query = list(
       select = "id,name,display_name,osm_id,geometry",
       osm_id = paste0("eq.", format(osm_id_num, scientific = FALSE, trim = TRUE)),
       limit = 1
-    )
-
-  data = si_parse_response(httr2::req_perform(req))
+    ),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }
 
 #' Get one bounds polygon by location ID (via secure RPC)
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param client A client from `client()` authenticated with `sign_in()`.
 #' @param location_id Text location identifier from `public.location.location_id`.
 #'
 #' @return A tibble with up to one row.
@@ -41,17 +43,18 @@ si_get_polygon_by_location_id = function(client, location_id) {
     stop("`location_id` must be a non-empty string.")
   }
 
-  req = httr2::request(paste0(client$supabase_url, "/rest/v1/rpc/fn_bounds_by_location_id")) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_body_json(list(p_location_id = trimws(location_id)))
-
-  data = si_parse_response(httr2::req_perform(req))
+  data = si_perform(
+    client,
+    "/rest/v1/rpc/fn_bounds_by_location_id",
+    body = list(p_location_id = trimws(location_id)),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }
 
 #' Get one bounds polygon by area ID (via secure RPC)
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param client A client from `client()` authenticated with `sign_in()`.
 #' @param area_id UUID area identifier from `public.location.area_id`.
 #'
 #' @return A tibble with up to one row.
@@ -70,17 +73,18 @@ si_get_polygon_by_area_id = function(client, area_id) {
     stop("`area_id` must be a valid UUID string.")
   }
 
-  req = httr2::request(paste0(client$supabase_url, "/rest/v1/rpc/fn_bounds_by_area_id")) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_body_json(list(p_area_id = area_id))
-
-  data = si_parse_response(httr2::req_perform(req))
+  data = si_perform(
+    client,
+    "/rest/v1/rpc/fn_bounds_by_area_id",
+    body = list(p_area_id = area_id),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }
 
 #' Lookup location rows by place name (via secure RPC)
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param client A client from `client()` authenticated with `sign_in()`.
 #' @param place_name Required place text to search in `public.location.place_name`.
 #' @param country Optional country filter.
 #' @param state Optional state/province filter.
@@ -116,24 +120,23 @@ si_get_polygon_lookup_by_place_name = function(client,
   state = normalize_opt_text(state)
   limit = si_clamp_limit(limit, max_limit = 5L)
 
-  req = httr2::request(paste0(client$supabase_url, "/rest/v1/rpc/fn_location_lookup_by_place_name")) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_body_json(
-      list(
-        p_place_name = place_name,
-        p_country = country,
-        p_state = state,
-        p_limit = limit
-      )
-    )
-
-  data = si_parse_response(httr2::req_perform(req))
+  data = si_perform(
+    client,
+    "/rest/v1/rpc/fn_location_lookup_by_place_name",
+    body = list(
+      p_place_name = place_name,
+      p_country = country,
+      p_state = state,
+      p_limit = limit
+    ),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }
 
 #' Get one bounds polygon by place name (via secure RPC)
 #'
-#' @param client A client from `si_client()` authenticated with `si_auth_signin()`.
+#' @param client A client from `client()` authenticated with `sign_in()`.
 #' @param place_name Required place text to search in `public.location.place_name`.
 #' @param country Optional country filter.
 #' @param state Optional state/province filter.
@@ -166,16 +169,15 @@ si_get_polygon_by_place_name = function(client,
   country = normalize_opt_text(country)
   state = normalize_opt_text(state)
 
-  req = httr2::request(paste0(client$supabase_url, "/rest/v1/rpc/fn_bounds_by_place_name")) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_body_json(
-      list(
-        p_place_name = place_name,
-        p_country = country,
-        p_state = state
-      )
-    )
-
-  data = si_parse_response(httr2::req_perform(req))
+  data = si_perform(
+    client,
+    "/rest/v1/rpc/fn_bounds_by_place_name",
+    body = list(
+      p_place_name = place_name,
+      p_country = country,
+      p_state = state
+    ),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }

@@ -4,8 +4,8 @@
 #' and triggers asynchronous processing -- all server-side via
 #' \code{fn_submit_request} in PostgreSQL.
 #'
-#' @param client A client from \code{si_client()} authenticated with
-#'   \code{si_auth_signin()}.
+#' @param client A client from \code{client()} authenticated with
+#'   \code{sign_in()}.
 #' @param geometry GeoJSON geometry list, or a JSON string.
 #' @param n_keywords Number of ingestion keywords. When \code{NULL} and
 #'   \code{theme_ids} is provided, the server derives the count from
@@ -71,13 +71,7 @@ si_submit_request = function(client,
     p_sites_grid_sqkm = as.numeric(sites_grid_sqkm)
   )
 
-  req = httr2::request(
-    paste0(client$supabase_url, "/rest/v1/rpc/fn_submit_request")
-  ) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_body_json(payload, auto_unbox = TRUE)
-
-  data = si_parse_response(httr2::req_perform(req))
+  data = si_perform(client, "/rest/v1/rpc/fn_submit_request", body = payload, auth = TRUE)
 
   # fn_submit_request returns a jsonb scalar; PostgREST wraps it.
   if (is.character(data) && length(data) == 1) {
@@ -92,8 +86,8 @@ si_submit_request = function(client,
 #' Row-level security restricts results to the authenticated user's
 #' own requests.
 #'
-#' @param client A client from \code{si_client()} authenticated with
-#'   \code{si_auth_signin()}.
+#' @param client A client from \code{client()} authenticated with
+#'   \code{sign_in()}.
 #' @param request_id Request UUID string.
 #'
 #' @return A tibble with one row, or an empty tibble if not found.
@@ -104,24 +98,24 @@ si_get_request_status = function(client, request_id) {
     stop("`request_id` must be a non-empty UUID string.")
   }
 
-  req = httr2::request(
-    paste0(client$supabase_url, "/rest/v1/requests")
-  ) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_url_query(
+  data = si_perform(
+    client,
+    "/rest/v1/requests",
+    method = "GET",
+    query = list(
       id = paste0("eq.", trimws(request_id)),
       select = "*",
       limit = 1
-    )
-
-  data = si_parse_response(httr2::req_perform(req))
+    ),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }
 
 #' Get request history for current user
 #'
-#' @param client A client from \code{si_client()} authenticated with
-#'   \code{si_auth_signin()}.
+#' @param client A client from \code{client()} authenticated with
+#'   \code{sign_in()}.
 #' @param limit Maximum rows (default 100).
 #' @param offset Pagination offset (default 0).
 #'
@@ -136,17 +130,14 @@ si_get_requests = function(client, limit = 100L, offset = 0L) {
     stop("`offset` must be a non-negative integer.")
   }
 
-  req = httr2::request(
-    paste0(client$supabase_url, "/rest/v1/rpc/fn_get_user_requests")
-  ) |>
-    si_add_common_headers(client = client, use_auth = TRUE) |>
-    httr2::req_body_json(
-      list(
-        p_limit = limit,
-        p_offset = offset
-      )
-    )
-
-  data = si_parse_response(httr2::req_perform(req))
+  data = si_perform(
+    client,
+    "/rest/v1/rpc/fn_get_user_requests",
+    body = list(
+      p_limit = limit,
+      p_offset = offset
+    ),
+    auth = TRUE
+  )
   si_as_tibble(data)
 }

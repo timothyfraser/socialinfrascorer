@@ -17,55 +17,6 @@ si_clamp_limit = function(limit, max_limit = 1000L) {
 }
 
 #' @keywords internal
-si_parse_response = function(resp) {
-  status = httr2::resp_status(resp)
-  body_text = tryCatch(httr2::resp_body_string(resp), error = function(e) "")
-
-  if (status >= 400) {
-    parsed_err = tryCatch(
-      jsonlite::fromJSON(body_text, simplifyVector = FALSE),
-      error = function(e) NULL
-    )
-    err_msg = if (is.list(parsed_err) && !is.null(parsed_err$message)) {
-      as.character(parsed_err$message)
-    } else if (is.list(parsed_err) && !is.null(parsed_err$error)) {
-      as.character(parsed_err$error)
-    } else if (nzchar(body_text)) {
-      body_text
-    } else {
-      paste("HTTP", status)
-    }
-    stop(err_msg, call. = FALSE)
-  }
-
-  parsed = tryCatch(
-    httr2::resp_body_json(resp, simplifyVector = TRUE),
-    error = function(e) NULL
-  )
-  if (is.null(parsed)) {
-    return(data.frame())
-  }
-  parsed
-}
-
-#' @keywords internal
-si_add_common_headers = function(req, client, use_auth = FALSE) {
-  req = req |>
-    httr2::req_headers(
-      apikey = client$anon_key,
-      `Content-Type` = "application/json"
-    )
-
-  if (isTRUE(use_auth) && !is.null(client$access_token) && nchar(client$access_token) > 0) {
-    req = req |> httr2::req_headers(Authorization = paste("Bearer", client$access_token))
-  } else {
-    req = req |> httr2::req_headers(Authorization = paste("Bearer", client$anon_key))
-  }
-
-  req
-}
-
-#' @keywords internal
 si_as_tibble = function(data) {
   if (is.null(data)) return(dplyr::tibble())
 
@@ -96,3 +47,4 @@ si_as_tibble = function(data) {
 
   dplyr::tibble(value = data)
 }
+

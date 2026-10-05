@@ -1,7 +1,7 @@
 Package: socialinfrascorer
 Type: Package
 Title: Supabase Client for Social Infrastructure Scorecard
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(
     person(
       "Timothy",
@@ -19,21 +19,25 @@ Author: Timothy Fraser [aut, cre]
 Maintainer: Timothy Fraser <tmf77@cornell.edu>
 Description: Client package for the Social Infrastructure Scorecard.
     Communicates exclusively through Supabase Auth and PostgREST APIs.
-    Supports signup/signin, polygon lookup, request submission with
-    theme and grid configuration, scorecard downloads, and account
-    management. No direct Plumber API access is required.
+    Supports signup/signin, polygon lookup, request submission (sites
+    from Overture Maps open data), scorecard downloads, and account
+    management. No direct Plumber API access is required. HTTP goes
+    through one internal choke point: 'httr2' on desktop R, or a
+    synchronous browser request inside 'webR'.
 URL: https://connect.systems-apps.com/r/,
     https://github.com/timothyfraser/socialinfrascorer
 BugReports: https://github.com/timothyfraser/socialinfrascorer/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports:
-    httr2,
     dplyr,
-    jsonlite
+    jsonlite,
+    utils
 Suggests:
+    httr2,
+    testthat (>= 3.0.0),
+    withr,
     curl,
     sf,
     osmdata,
@@ -41,3 +45,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Config/Needs/website: pkgdown
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
