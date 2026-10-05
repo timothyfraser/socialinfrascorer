@@ -8,12 +8,15 @@
 
 <img src="man/figures/logo.png" align="right" height="300" alt="socialinfrascorer logo" class="si-home-logo" />
 
-**`socialinfrascorer`** lets you use the [Social Infrastructure Scorecard](articles/dashboard.html) from R.
+**`socialinfrascorer`** lets you use the [Social Infrastructure Scorecard](https://connect.systems-apps.com/r/articles/dashboard.html) from R.
 View social infrastructure sites (parks, community spaces, places of worship, and more),
 request scorecards for new areas, and download results for analysis.
 
-> Looking for Python? A companion package,
-> **`socialinfrascorepy`**, is coming soon.
+> Looking for Python? See the companion package,
+> **[`socialinfrascorepy`](https://connect.systems-apps.com/py/)**.
+
+Documentation: <https://connect.systems-apps.com/r/> (intended public name:
+`socialinfrastructure.info/r/`, pending the custom domain).
 
 ## Installation
 

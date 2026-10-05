@@ -1,4 +1,5 @@
-url: https://timothyfraser.github.io/scorecard/socialinfrascorer/
+# Served from Posit Connect; intended public name socialinfrastructure.info/r/ (pending custom domain).
+url: https://connect.systems-apps.com/r/
 destination: ../docs/socialinfrascorer
 
 template:

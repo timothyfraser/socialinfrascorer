@@ -22,9 +22,9 @@ Description: Client package for the Social Infrastructure Scorecard.
     Supports signup/signin, polygon lookup, request submission with
     theme and grid configuration, scorecard downloads, and account
     management. No direct Plumber API access is required.
-URL: https://timothyfraser.github.io/scorecard/socialinfrascorer/,
-    https://github.com/timothyfraser/scorecard/tree/main/socialinfrascorer
-BugReports: https://github.com/timothyfraser/scorecard/issues
+URL: https://connect.systems-apps.com/r/,
+    https://github.com/timothyfraser/socialinfrascorer
+BugReports: https://github.com/timothyfraser/socialinfrascorer/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
