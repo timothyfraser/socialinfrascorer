@@ -48,3 +48,28 @@ si_as_tibble = function(data) {
   dplyr::tibble(value = data)
 }
 
+#' Accept retired arguments with a warning; reject anything else
+#'
+#' @keywords internal
+#' @noRd
+si_retired_args = function(..., .retired) {
+  dots = list(...)
+  if (length(dots) == 0) {
+    return(invisible(NULL))
+  }
+  dot_names = names(dots) %||% rep("", length(dots))
+  unknown = dot_names[!dot_names %in% .retired]
+  if (length(unknown) > 0) {
+    shown = ifelse(nzchar(unknown), paste0("`", unknown, "`"), "an unnamed argument")
+    stop("Unused argument(s): ", paste(shown, collapse = ", "), ".", call. = FALSE)
+  }
+  warning(
+    paste0(
+      paste0("`", dot_names, "`", collapse = ", "),
+      " is ignored: sites now come from Overture Maps (open data), ",
+      "so there is no keyword query grid to configure."
+    ),
+    call. = FALSE
+  )
+  invisible(NULL)
+}

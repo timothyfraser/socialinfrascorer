@@ -7,7 +7,7 @@
 si_change_subscription(client, user_id, tier)
 }
 \arguments{
-\item{client}{A client from \code{si_client()} authenticated with \code{si_auth_signin()}.}
+\item{client}{A client from \code{client()} authenticated with \code{sign_in()}.}
 
 \item{user_id}{UUID user identifier.}
 

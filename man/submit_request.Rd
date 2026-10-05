@@ -7,22 +7,19 @@
 submit_request(
   client,
   geometry,
-  n_keywords = NULL,
   name = NULL,
   display_name = NULL,
   place_name = NULL,
   country = "US",
   state = NULL,
   theme_ids = NULL,
-  sites_grid_sqkm = 2
+  ...
 )
 }
 \arguments{
 \item{client}{A client from \code{client()} authenticated with \code{sign_in()}.}
 
 \item{geometry}{GeoJSON geometry (Polygon or MultiPolygon, CRS 4326).}
-
-\item{n_keywords}{Number of keywords (optional; derived from themes when \code{NULL}).}
 
 \item{name}{Optional short identifier.}
 
@@ -34,13 +31,17 @@ submit_request(
 
 \item{state}{Optional state/region.}
 
-\item{theme_ids}{Integer vector or CSV string of theme IDs.}
+\item{theme_ids}{Optional integer vector or CSV string of theme IDs;
+\code{NULL} uses the server default.}
 
-\item{sites_grid_sqkm}{Query grid cell size in sq km (default 2).}
+\item{...}{Retired arguments from the keyword-search era
+(\code{sites_grid_sqkm}, \code{n_keywords}) are accepted and ignored
+with a warning.}
 }
 \value{
 A list with \code{request}, \code{location_id}, and related fields.
 }
 \description{
-Submit a scorecard request for a new area
+Sites for the new area are drawn from Overture Maps (open data) and
+scored server-side. Poll \code{get_request_status()} until it finishes.
 }

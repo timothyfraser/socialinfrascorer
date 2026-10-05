@@ -34,7 +34,7 @@ si_client = function(supabase_url,
 si_require_auth = function(client) {
   if (is.null(client$access_token) || nchar(client$access_token) == 0) {
     stop(
-      "This function requires an authenticated user. Call `si_auth_signin()` first.",
+      "This function requires an authenticated user. Call `sign_in()` first.",
       call. = FALSE
     )
   }

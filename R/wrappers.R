@@ -48,21 +48,29 @@ send_password_reset = si_auth_reset_password
 #' @export
 delete_account = si_auth_delete_account
 
-#' List available social-infrastructure themes
+#' List theme categories (internal)
 #'
-#' @param client A client from \code{client()}.
+#' Theme categories from the earlier keyword-based site ingestion. Sites now
+#' come from Overture Maps (open data); this helper is kept, unexported, for
+#' backwards compatibility. Call it as
+#' \code{socialinfrascorer:::get_themes(client)}.
+#'
+#' @param client A client from \code{client()}. No sign-in needed.
 #'
 #' @return A tibble with theme IDs and types.
-#' @export
+#' @keywords internal
 get_themes = si_get_themes
 
-#' List keywords for given theme IDs
+#' List keywords for given theme IDs (internal)
+#'
+#' Search terms from the earlier keyword-based site ingestion, kept
+#' unexported for backwards compatibility. Sites now come from Overture Maps.
 #'
 #' @param client A client from \code{client()}.
 #' @param theme_ids Integer vector or comma-separated string of theme IDs. Pass \code{NULL} for all.
 #'
 #' @return A tibble with theme, type, and term columns.
-#' @export
+#' @keywords internal
 get_theme_keywords = si_get_theme_keywords
 
 #' Search for locations by place name
@@ -143,16 +151,21 @@ get_sites = si_get_sites_by_location_id
 
 #' Submit a scorecard request for a new area
 #'
+#' Sites for the new area are drawn from Overture Maps (open data) and
+#' scored server-side. Poll \code{get_request_status()} until it finishes.
+#'
 #' @param client A client from \code{client()} authenticated with \code{sign_in()}.
 #' @param geometry GeoJSON geometry (Polygon or MultiPolygon, CRS 4326).
-#' @param n_keywords Number of keywords (optional; derived from themes when \code{NULL}).
 #' @param name Optional short identifier.
 #' @param display_name Optional user-facing label.
 #' @param place_name Optional place name metadata.
 #' @param country Country code (default \code{"US"}).
 #' @param state Optional state/region.
-#' @param theme_ids Integer vector or CSV string of theme IDs.
-#' @param sites_grid_sqkm Query grid cell size in sq km (default 2).
+#' @param theme_ids Optional integer vector or CSV string of theme IDs;
+#'   \code{NULL} uses the server default.
+#' @param ... Retired arguments from the keyword-search era
+#'   (\code{sites_grid_sqkm}, \code{n_keywords}) are accepted and ignored
+#'   with a warning.
 #'
 #' @return A list with \code{request}, \code{location_id}, and related fields.
 #' @export

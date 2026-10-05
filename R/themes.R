@@ -1,7 +1,7 @@
 #' List available themes
 #'
 #' Returns the reference table of theme categories used for
-#' keyword-based Google Places ingestion.
+#' the earlier keyword-based site ingestion (sites now come from Overture Maps).
 #'
 #' @param client A client from \code{client()}.
 #'   Authentication is optional; the endpoint is public.

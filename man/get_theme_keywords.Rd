@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrappers.R
 \name{get_theme_keywords}
 \alias{get_theme_keywords}
-\title{List keywords for given theme IDs}
+\title{List keywords for given theme IDs (internal)}
 \usage{
 get_theme_keywords(client, theme_ids = NULL)
 }
@@ -15,5 +15,7 @@ get_theme_keywords(client, theme_ids = NULL)
 A tibble with theme, type, and term columns.
 }
 \description{
-List keywords for given theme IDs
+Search terms from the earlier keyword-based site ingestion, kept
+unexported for backwards compatibility. Sites now come from Overture Maps.
 }
+\keyword{internal}

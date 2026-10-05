@@ -2,23 +2,21 @@
 #'
 #' Validates geometry, checks quota, inserts bounds + location + request row,
 #' and triggers asynchronous processing -- all server-side via
-#' \code{fn_submit_request} in PostgreSQL.
+#' \code{fn_submit_request} in PostgreSQL. Sites are drawn from Overture
+#' Maps (open data).
 #'
 #' @param client A client from \code{client()} authenticated with
 #'   \code{sign_in()}.
 #' @param geometry GeoJSON geometry list, or a JSON string.
-#' @param n_keywords Number of ingestion keywords. When \code{NULL} and
-#'   \code{theme_ids} is provided, the server derives the count from
-#'   the matching theme keywords.
 #' @param name Optional short identifier for the polygon.
 #' @param display_name Optional user-facing polygon label.
 #' @param place_name Optional place name metadata.
 #' @param country Country code or name (default \code{"US"}).
 #' @param state Optional state/region metadata.
-#' @param theme_ids Integer vector or comma-separated string of theme IDs
-#'   to use for keyword selection.
-#' @param sites_grid_sqkm Query-grid cell size in sqkm for Google Places
-#'   ingestion (default 2).
+#' @param theme_ids Optional integer vector or comma-separated string of
+#'   theme IDs. \code{NULL} uses the server default.
+#' @param ... Retired arguments (\code{sites_grid_sqkm}, \code{n_keywords})
+#'   are accepted and ignored with a warning.
 #'
 #' @return A list with \code{request}, \code{bounds_id}, \code{location_id},
 #'   \code{required_queries}, and \code{usage} fields.
@@ -26,14 +24,14 @@
 #' @noRd
 si_submit_request = function(client,
                              geometry,
-                             n_keywords = NULL,
                              name = NULL,
                              display_name = NULL,
                              place_name = NULL,
                              country = "US",
                              state = NULL,
                              theme_ids = NULL,
-                             sites_grid_sqkm = 2) {
+                             ...) {
+  si_retired_args(..., .retired = c("sites_grid_sqkm", "n_keywords"))
   si_require_auth(client)
 
   # Coerce geometry to a JSON string for the RPC
@@ -66,9 +64,7 @@ si_submit_request = function(client,
     },
     p_state = if (!is.null(state)) trimws(as.character(state)) else NULL,
     p_place_name = if (!is.null(place_name)) trimws(as.character(place_name)) else NULL,
-    p_theme_ids = theme_ids_csv,
-    p_n_keywords = if (!is.null(n_keywords)) as.integer(n_keywords) else NULL,
-    p_sites_grid_sqkm = as.numeric(sites_grid_sqkm)
+    p_theme_ids = theme_ids_csv
   )
 
   data = si_perform(client, "/rest/v1/rpc/fn_submit_request", body = payload, auth = TRUE)

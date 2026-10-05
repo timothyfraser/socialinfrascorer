@@ -7,8 +7,8 @@
 si_get_request_status(client, request_id)
 }
 \arguments{
-\item{client}{A client from \code{si_client()} authenticated with
-\code{si_auth_signin()}.}
+\item{client}{A client from \code{client()} authenticated with
+\code{sign_in()}.}
 
 \item{request_id}{Request UUID string.}
 }

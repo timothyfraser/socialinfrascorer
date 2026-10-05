@@ -2,16 +2,20 @@
 % Please edit documentation in R/wrappers.R
 \name{get_themes}
 \alias{get_themes}
-\title{List available social-infrastructure themes}
+\title{List theme categories (internal)}
 \usage{
 get_themes(client)
 }
 \arguments{
-\item{client}{A client from \code{client()}.}
+\item{client}{A client from \code{client()}. No sign-in needed.}
 }
 \value{
 A tibble with theme IDs and types.
 }
 \description{
-List available social-infrastructure themes
+Theme categories from the earlier keyword-based site ingestion. Sites now
+come from Overture Maps (open data); this helper is kept, unexported, for
+backwards compatibility. Call it as
+\code{socialinfrascorer:::get_themes(client)}.
 }
+\keyword{internal}
