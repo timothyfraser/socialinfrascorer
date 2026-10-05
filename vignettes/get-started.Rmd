@@ -28,7 +28,7 @@ These are provided when you sign up for access.
 
 ## Installation
 
-```{r install}
+```{r install, eval = FALSE}
 devtools::install_github(
   "timothyfraser/scorecard",
   subdir = "socialinfrascorer"
@@ -40,7 +40,7 @@ devtools::install_github(
 The `client()` function builds a lightweight configuration object that every
 other function in the package requires.
 
-```{r client}
+```{r client, eval = FALSE}
 library(socialinfrascorer)
 
 cli = client(
@@ -54,7 +54,7 @@ cli = client(
 Most operations require an authenticated session. Use `sign_up()` once to
 register, then `sign_in()` for subsequent sessions.
 
-```{r auth}
+```{r auth, eval = FALSE}
 # First time only
 result = sign_up(cli, "you@example.com", "strong-password", name = "Your Name")
 
@@ -71,7 +71,7 @@ downstream functions.
 You can find neighborhoods by OpenStreetMap ID, internal location ID, area ID,
 or free-text place name.
 
-```{r polygon}
+```{r polygon, eval = FALSE}
 # By OSM ID
 poly = get_boundary_by_osm_id(authed, osm_id = 5128581)
 
@@ -88,22 +88,14 @@ Example output (sample):
         84217 5128581 Ithaca     Tompkins NY    US       15.41   Polygon
 ```
 
-## Step 4 — Browse themes and keywords
+## Step 4 — Submit a scorecard request
 
-Social infrastructure is organised into themes (e.g. community spaces, parks,
-places of worship). Browse what is available before submitting a request.
+Supply a GeoJSON polygon. The server validates the geometry, checks your
+quota, and starts asynchronous processing. Sites inside the polygon come
+from Overture Maps (open data); social infrastructure is organised into
+themes (community spaces, places of worship, social businesses, parks).
 
-```{r themes}
-themes = get_themes(authed)
-keywords = get_theme_keywords(authed, theme_ids = c(1, 3, 4))
-```
-
-## Step 5 — Submit a scorecard request
-
-Supply a GeoJSON polygon and, optionally, theme selections. The server
-validates geometry, checks your quota, and starts asynchronous processing.
-
-```{r submit}
+```{r submit, eval = FALSE}
 geom = list(
   type = "Polygon",
   coordinates = list(list(
@@ -114,19 +106,18 @@ geom = list(
 )
 
 result = submit_request(
-  client    = authed,
-  area      = geom,
-  theme_ids = c(1, 3, 4),
-  query_grid_sqkm = 2
+  client   = authed,
+  geometry = geom,
+  name     = "my-neighborhood"
 )
 ```
 
-## Step 6 — Poll for completion and retrieve results
+## Step 5 — Poll for completion and retrieve results
 
 Processing takes a few minutes. Poll the request status and retrieve the
 scorecard when ready.
 
-```{r results}
+```{r results, eval = FALSE}
 Sys.sleep(30)
 status = get_request_status(authed, result$request$id)
 
@@ -136,9 +127,9 @@ if (status$status[1] == "success") {
 }
 ```
 
-## Step 7 — Check your account
+## Step 6 — Check your account
 
-```{r account}
+```{r account, eval = FALSE}
 get_subscription(authed)
 get_usage(authed, start_date = "2025-01-01")
 get_remaining_queries(authed)

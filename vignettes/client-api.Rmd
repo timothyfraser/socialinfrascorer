@@ -31,7 +31,7 @@ and PostgREST. No private API URL is required.
 
 ## Client setup
 
-```{r}
+```{r, eval = FALSE}
 library(socialinfrascorer)
 
 cli = client(
@@ -47,7 +47,7 @@ cli = client(
 
 ## Authentication
 
-```{r}
+```{r, eval = FALSE}
 sign_up(client, email, password, name = NULL)
 sign_in(client, email, password)
 send_password_reset(client)
@@ -63,20 +63,9 @@ delete_account(client)
 - `delete_account()` calls a server-side RPC that deletes the
   authenticated user.
 
-## Themes and keywords
-
-```{r}
-get_themes(client)
-get_theme_keywords(client, theme_ids = NULL)
-```
-
-- `get_themes()` lists all available social-infrastructure themes.
-- `get_theme_keywords()` returns keywords for selected theme IDs
-  (or all themes when `NULL`).
-
 ## Polygon lookup
 
-```{r}
+```{r, eval = FALSE}
 search_locations(client, query, country = NULL, state = NULL, limit = 5)
 get_boundary_by_osm_id(client, osm_id)
 get_boundary_by_location_id(client, location_id)
@@ -90,7 +79,7 @@ to a single boundary.
 
 ## Scorecard and sites
 
-```{r}
+```{r, eval = FALSE}
 get_scorecard(client, osm_id = NULL, location_id = NULL, limit = 100, offset = 0)
 get_sites(client, location_id, limit = 1000)
 ```
@@ -102,17 +91,15 @@ get_sites(client, location_id, limit = 1000)
 
 ## Request workflow
 
-```{r}
+```{r, eval = FALSE}
 submit_request(
-  client, area,
-  keyword_count   = NULL,
-  request_name    = NULL,
-  label           = NULL,
-  place           = NULL,
-  country         = "US",
-  state           = NULL,
-  theme_ids       = NULL,
-  query_grid_sqkm = 2
+  client, geometry,
+  name         = NULL,
+  display_name = NULL,
+  place_name   = NULL,
+  country      = "US",
+  state        = NULL,
+  theme_ids    = NULL
 )
 
 get_request_status(client, request_id)
@@ -121,16 +108,18 @@ get_requests(client, limit = 100, offset = 0)
 
 ### Parameters for `submit_request()`
 
-- **`area`** — GeoJSON geometry list or JSON string (Polygon / MultiPolygon,
-  CRS 4326).
-- **`theme_ids`** — integer vector or CSV string (e.g. `c(1,3,4)` or
-  `"1,3,4"`). Selects keyword groups for site ingestion.
-- **`query_grid_sqkm`** — cell size for the ephemeral query grid used
-  during Google Places ingestion (default 2 sq km).
+- **`geometry`** — GeoJSON geometry list or JSON string (Polygon /
+  MultiPolygon, CRS 4326).
+- **`theme_ids`** — optional integer vector or CSV string (e.g. `c(1,3,4)`
+  or `"1,3,4"`); `NULL` uses the server default.
+
+Sites for the new area come from Overture Maps (open data). The retired
+arguments `sites_grid_sqkm` and `n_keywords` are still accepted but ignored
+with a warning.
 
 ## Account and usage
 
-```{r}
+```{r, eval = FALSE}
 get_subscription(client)
 get_usage(client, start_date = NULL, end_date = NULL)
 get_remaining_queries(client)

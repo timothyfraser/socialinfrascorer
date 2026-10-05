@@ -25,7 +25,7 @@ Our system needs to support the following operations
       - We convert that raster into a grid of 1 square kilometer cells (linked to location_id).
          - We persist a minimal cache in `public.neighborhood_grid_cache`:
            `id`, `location_id`, `year`, `cellsize_m`, `population` (3 decimals), `geometry`.
-      - When this is complete, set the 'grid' field value for that request entry to TRUE. This will trigger the sites ingestion process. Database should ping our REST API via HTTP GET request (edge function?) to go query Google Places API via api/routes_ingest.R and jobs/ingest_places.R. This will take a while.
+      - When this is complete, set the 'grid' field value for that request entry to TRUE. This will trigger the sites ingestion process, which loads the polygon's places from Overture Maps (open data). (The original design queried a commercial places API by keyword; that path is retired.)
          - note: api/routes_ingest.R and jobs/ingest_places.R are currently configured to use a local file of grid cells, but in the future, they should use public.neighborhood_grid_cache.
       - When this data ingest process is complete (could take a few minutes), set the entry in the request table for field 'sites' to TRUE. This will trigger the scorecard calculation process. Database should ping our REST API via HTTP GET request (edge function?) to go calculate the scorecard. This will take a few seconds. In this API endpoint job,
          - for the given location associated with that request,
@@ -48,7 +48,7 @@ Our system needs to support the following operations
 - User resets password
 - User deletes account
 - User checks their requests history via 'requests' table, where they only see rows pertaining to their userid.
-   - The 'area' and 'n_keywords' fields in the 'requests' table can be multiplied to describe how many total square kilometer queries we have run with Google Places API. This essentially is our cost metric.
+   - The 'area' and 'n_keywords' fields in the 'requests' table can be multiplied to describe how many total square-kilometer queries a user has run. This is the quota metric.
 - Request lifecycle timing is tracked in `public.requests` (`status`, `update_time`) rather than in per-cell cache timestamps.
 - User checks total number of requests and 'n_queries' (total square kilometer queries), aggregated per month, within a user provided time frame - defaults to last six months.
 - Check user's subscription tier.

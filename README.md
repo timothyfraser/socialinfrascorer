@@ -138,7 +138,6 @@ Expected output (sample):
 |------|-----------|
 | **Auth** | `sign_up()`, `sign_in()`, `send_password_reset()`, `delete_account()` |
 | **Boundaries** | `search_locations()`, `get_boundary_by_osm_id()`, `get_boundary_by_place_name()`, ... |
-| **Themes** | `get_themes()`, `get_theme_keywords()` |
 | **Requests** | `submit_request()`, `get_request_status()`, `get_requests()` |
 | **Scorecard** | `get_scorecard()`, `get_sites()` |
 | **Account** | `get_subscription()`, `get_usage()`, `get_remaining_queries()` |
@@ -154,6 +153,18 @@ Get your keys from the Social Infrastructure Dashboard!
 |----------|----------|---------|
 | `SUPABASE_URL` | Always | Supabase project URL |
 | `SUPABASE_ANON_KEY` | Always | Supabase anon/publishable key |
+
+Sites come from [Overture Maps](https://overturemaps.org/) (open data).
+
+## HTTP backends and webR
+
+Every request goes through one internal function. On desktop R it uses
+[httr2](https://httr2.r-lib.org/) (a suggested package: install it with
+`install.packages("httr2")`). Inside [webR](https://docs.r-wasm.org/webr/)
+the package switches automatically to a browser backend that
+sends a synchronous `XMLHttpRequest` through `webr::eval_js()`, so httr2 is
+not needed there. Force a backend with
+`options(socialinfrascorer.backend = "httr2")` or `"webr"`.
 
 ---
 
