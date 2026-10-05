@@ -26,8 +26,8 @@ These queries read data that already exists in the database.
 ```{r readonly, eval = FALSE}
 library(socialinfrascorer)
 
-cli = client(Sys.getenv("SUPABASE_URL"), Sys.getenv("SUPABASE_ANON_KEY"))
-auth = sign_in(cli, Sys.getenv("EMAIL"), Sys.getenv("PASSWORD"))
+cli = client()
+auth = sign_in(cli, "you@example.com", "your-password")
 authed = auth$client
 
 # Search by place name

@@ -1,5 +1,6 @@
 # socialinfrascorer (development version)
 
+* `client()` now works with no arguments: the scorecard's public Supabase URL and publishable (anon) key are built in, so you no longer set `SUPABASE_URL` or `SUPABASE_ANON_KEY`. The quick start is `cli = client()` then `sign_in(cli, email, password)`. For testing or self-hosting, override the defaults with the `SI_SUPABASE_URL` and `SI_SUPABASE_ANON_KEY` environment variables or with the arguments. Existing calls that pass both arguments keep working.
 * Every request now goes through one internal HTTP choke point. httr2 moves from Imports to Suggests: desktop R still uses it (install it with `install.packages("httr2")`), and inside webR the package switches to a browser backend that sends a synchronous `XMLHttpRequest` through `webr::eval_js()`. Choose one explicitly with `options(socialinfrascorer.backend = "httr2")` or `"webr"`.
 * HTTP errors now report Supabase's own message (for example "Invalid login credentials") as an `si_http_error` condition, instead of httr2's generic "HTTP 400 Bad Request".
 * Sites come from Overture Maps (open data); the documentation no longer describes keyword search.

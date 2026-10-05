@@ -4,12 +4,21 @@
 \alias{client}
 \title{Create a socialinfrascorer API client}
 \usage{
-client(supabase_url, anon_key, access_token = NULL, refresh_token = NULL)
+client(
+  supabase_url = si_default_url(),
+  anon_key = si_default_key(),
+  access_token = NULL,
+  refresh_token = NULL
+)
 }
 \arguments{
-\item{supabase_url}{Supabase project URL (e.g. \code{https://project.supabase.co}).}
+\item{supabase_url}{Supabase project URL (e.g. \code{https://project.supabase.co}).
+Defaults to the scorecard's public project, or to \code{SI_SUPABASE_URL}
+when that environment variable is set.}
 
-\item{anon_key}{Supabase anon/publishable API key.}
+\item{anon_key}{Supabase anon/publishable API key. Defaults to the
+scorecard's public key, or to \code{SI_SUPABASE_ANON_KEY} when that
+environment variable is set. Never pass a service-role or secret key.}
 
 \item{access_token}{Optional authenticated access token.}
 
@@ -19,5 +28,17 @@ client(supabase_url, anon_key, access_token = NULL, refresh_token = NULL)
 A client object used by package functions.
 }
 \description{
-Create a socialinfrascorer API client
+Call \code{client()} with no arguments: it connects to the Social
+Infrastructure Scorecard's public Supabase project. The URL and the
+publishable (anon) key are public by design and built in, so you do not set
+any environment variables. Row level security protects the data; you still
+need \code{sign_in()} for anything that is not public.
+}
+\details{
+For testing or self-hosting you can point the package elsewhere with the
+environment variables \code{SI_SUPABASE_URL} and
+\code{SI_SUPABASE_ANON_KEY}, or by passing the arguments directly.
+}
+\examples{
+cli = client()
 }

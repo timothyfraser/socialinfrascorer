@@ -1,11 +1,27 @@
 #' Create a socialinfrascorer API client
 #'
+#' Call \code{client()} with no arguments: it connects to the Social
+#' Infrastructure Scorecard's public Supabase project. The URL and the
+#' publishable (anon) key are public by design and built in, so you do not set
+#' any environment variables. Row level security protects the data; you still
+#' need \code{sign_in()} for anything that is not public.
+#'
+#' For testing or self-hosting you can point the package elsewhere with the
+#' environment variables \code{SI_SUPABASE_URL} and
+#' \code{SI_SUPABASE_ANON_KEY}, or by passing the arguments directly.
+#'
 #' @param supabase_url Supabase project URL (e.g. \code{https://project.supabase.co}).
-#' @param anon_key Supabase anon/publishable API key.
+#'   Defaults to the scorecard's public project, or to \code{SI_SUPABASE_URL}
+#'   when that environment variable is set.
+#' @param anon_key Supabase anon/publishable API key. Defaults to the
+#'   scorecard's public key, or to \code{SI_SUPABASE_ANON_KEY} when that
+#'   environment variable is set. Never pass a service-role or secret key.
 #' @param access_token Optional authenticated access token.
 #' @param refresh_token Optional refresh token.
 #'
 #' @return A client object used by package functions.
+#' @examples
+#' cli = client()
 #' @export
 client = si_client
 
