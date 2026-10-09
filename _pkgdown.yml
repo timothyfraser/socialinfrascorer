@@ -1,5 +1,4 @@
-# Served from Posit Connect; intended public name socialinfrastructure.info/r/ (pending custom domain).
-url: https://connect.systems-apps.com/r/
+url: https://socialinfrastructure.info/r/
 destination: ../docs/socialinfrascorer
 
 template:

@@ -24,7 +24,7 @@ Description: Client package for the Social Infrastructure Scorecard.
     management. No direct Plumber API access is required. HTTP goes
     through one internal choke point: 'httr2' on desktop R, or a
     synchronous browser request inside 'webR'.
-URL: https://connect.systems-apps.com/r/,
+URL: https://socialinfrastructure.info/,
     https://github.com/timothyfraser/socialinfrascorer
 BugReports: https://github.com/timothyfraser/socialinfrascorer/issues
 License: MIT + file LICENSE
