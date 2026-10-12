@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrappers.R
 \name{get_remaining_queries}
 \alias{get_remaining_queries}
-\title{Get remaining monthly query quota}
+\title{Get remaining fair-use allowance}
 \usage{
 get_remaining_queries(client)
 }
@@ -10,8 +10,36 @@ get_remaining_queries(client)
 \item{client}{A client from \code{client()} authenticated with \code{sign_in()}.}
 }
 \value{
-A tibble with remaining quota.
+A one-row tibble with columns:
+\describe{
+\item{tier, display_name}{Fair-use tier id and its display name.}
+\item{per_day, day_requests, remaining_today}{Daily request limit,
+requests used in the last 24 hours, and requests left (never below 0).}
+\item{per_hour, hour_requests, remaining_this_hour}{Hourly request limit,
+requests used in the last hour, and requests left (never below 0).}
+\item{km2_per_day, day_km2}{Daily area limit and area requested in the
+last 24 hours (square kilometers).}
+\item{km2_per_hour, hour_km2}{Hourly area limit and area requested in the
+last hour (square kilometers).}
+\item{concurrent, running}{Maximum requests running at once and how many
+are running now.}
+\item{waiting_limit, waiting}{Maximum requests waiting in the queue and
+how many are waiting now.}
+\item{hour_resets_at, day_resets_at}{When the hourly and daily windows
+next free up capacity (POSIXct, UTC), or \code{NA}.}
+}
+A limit of \code{NA} means unlimited.
 }
 \description{
-Get remaining monthly query quota
+The Social Infrastructure Scorecard is free. To keep it fair for everyone,
+each account has rolling fair-use limits on new scorecard requests. On the
+free tier these are 200 requests per day, 30 requests per hour, 50,000
+square kilometers of requested area per day, 15,000 square kilometers per
+hour, and 3 requests running at once. The hourly and daily windows are rolling, so capacity frees up as
+older requests age out (see \code{hour_resets_at} and \code{day_resets_at}).
+}
+\details{
+This calls the \code{fn_fair_use_status} database function for the
+signed-in user. Where the server reports a limit of \code{-1} (unlimited),
+the limit and the matching \code{remaining_*} column are \code{NA}.
 }

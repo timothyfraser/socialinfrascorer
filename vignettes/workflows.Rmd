@@ -102,21 +102,23 @@ authed = auth$client
 send_password_reset(authed)
 delete_account(authed)
 
-# Request history and quotas
+# Request history and fair-use allowance
 get_requests(authed)
 get_subscription(authed)
 get_usage(authed, start_date = "2025-01-01")
 get_remaining_queries(authed)
 ```
 
-### Subscription tiers
+### Fair-use limits
 
-Every user has a subscription tier. The **free** tier allows a limited
-number of queries per month (currently 100 sq km queries). The
-**developer** tier (for the core team) has no limit.
-
-Usage is tracked as the product of `area` (polygon sq km) and `n_keywords`
-for each request.
+The scorecard is free and public; accounts exist for attribution and fair
+use. Each account has rolling hourly and daily limits on new requests. On
+the **free** tier these are 200 requests per day, 30 requests per hour,
+50,000 sq km of requested area per day, 15,000 sq km per hour, and 3
+requests running at once. `get_remaining_queries()` reports your limits,
+what you have used in the current windows, how many requests remain today
+and this hour, and when each window next frees up capacity. A limit of `NA`
+means unlimited.
 
 ## Implemented client functions
 
@@ -157,4 +159,4 @@ for each request.
 | `get_requests()` | List request history |
 | `get_subscription()` | Get subscription profile |
 | `get_usage()` | Get usage summary |
-| `get_remaining_queries()` | Get remaining monthly quota |
+| `get_remaining_queries()` | Get remaining fair-use allowance (per hour and per day) |

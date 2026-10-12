@@ -1,6 +1,6 @@
 #' Submit a new polygon request via Supabase RPC
 #'
-#' Validates geometry, checks quota, inserts bounds + location + request row,
+#' Validates geometry, checks fair-use limits, inserts bounds + location + request row,
 #' and triggers asynchronous processing -- all server-side via
 #' \code{fn_submit_request} in PostgreSQL.
 #'

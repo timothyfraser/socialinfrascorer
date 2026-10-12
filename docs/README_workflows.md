@@ -51,10 +51,9 @@ Our system needs to support the following operations
    - The 'area' and 'n_keywords' fields in the 'requests' table can be multiplied to describe how many total square kilometer queries we have run with Google Places API. This essentially is our cost metric.
 - Request lifecycle timing is tracked in `public.requests` (`status`, `update_time`) rather than in per-cell cache timestamps.
 - User checks total number of requests and 'n_queries' (total square kilometer queries), aggregated per month, within a user provided time frame - defaults to last six months.
-- Check user's subscription tier.
-   - Note: every user has a subscription tier. For now, just use 'free' and 'developer', where 'free' gets to query, let's say, a max of n_queries = 100 per month. 'developer' (describes the team currently developing the API and package) gets to query and unlimited amount. Default user subscription is 'free'
-- Change user's subscription tier (protected action, only the private api can do this)
-- Check how many n_queries are **remaining** this month for user X. Requires there to be a subscriptions metadata table that records how many queries are allowed per month, with a unique subscription id matching the one assigned to each user on signup.
+- Check user's fair-use tier.
+   - Note: the platform is free; tiers exist only for fair use. The default 'free' tier allows 200 requests per day, 30 per hour, 50,000 sq km per day, 15,000 sq km per hour, and 3 running at once (rolling windows). Tiers are assigned server-side; the client cannot change them.
+- Check how many requests are **remaining** this hour and today for the signed-in user, via the `fn_fair_use_status` RPC (`-1` = unlimited, returned as `NA`).
 
 ## Implemented client functions
 
@@ -80,7 +79,6 @@ Our system needs to support the following operations
   - `si_get_subscription()`
   - `si_get_usage()`
   - `si_get_remaining_queries()`
-  - `si_change_subscription()`
 
 ## Testing note
 

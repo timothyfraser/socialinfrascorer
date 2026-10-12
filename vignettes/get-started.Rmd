@@ -101,7 +101,7 @@ keywords = get_theme_keywords(authed, theme_ids = c(1, 3, 4))
 ## Step 5 — Submit a scorecard request
 
 Supply a GeoJSON polygon and, optionally, theme selections. The server
-validates geometry, checks your quota, and starts asynchronous processing.
+validates geometry, checks your fair-use limits, and starts asynchronous processing.
 
 ```{r submit}
 geom = list(

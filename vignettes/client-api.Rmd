@@ -138,5 +138,9 @@ get_remaining_queries(client)
 
 - `get_subscription()` returns the user's profile including tier.
 - `get_usage()` summarises request and query counts in a date range.
-- `get_remaining_queries()` returns the remaining monthly quota for the
-  authenticated user.
+- `get_remaining_queries()` returns the authenticated user's fair-use
+  allowance as one row: limits, current usage, `remaining_today`,
+  `remaining_this_hour`, and when the hourly and daily windows reset. Free
+  tier limits are 200 requests per day, 30 per hour, 50,000 sq km per day,
+  15,000 sq km per hour, and 3 running at once; a limit of `NA` means
+  unlimited.

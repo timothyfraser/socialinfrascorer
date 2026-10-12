@@ -143,7 +143,7 @@ reference:
       - get_requests
 
   - title: Account and Usage
-    desc: Subscription tier, usage summary, and remaining quota.
+    desc: Account tier, usage history, and remaining fair-use allowance.
     contents:
       - get_subscription
       - get_usage
